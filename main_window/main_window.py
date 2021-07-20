@@ -10,7 +10,8 @@ import pygame
 #############
 # CONSTANTS #
 #############
-WIDTH, HEIGHT = 900, 500 # Screen size
+WIDTH, HEIGHT = 900, 500
+SCREEN_SIZE = (WIDTH, HEIGHT)
 CAPTION = "Enso"
 
 ###########
@@ -26,7 +27,7 @@ class MainWindow:
         Constructor
         """
         # Set window size
-        WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+        WIN = pygame.display.set_mode(SCREEN_SIZE)
 
         # Set window title
         pygame.display.set_caption("Enso")
