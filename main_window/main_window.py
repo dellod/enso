@@ -1,6 +1,7 @@
-# main_window.py
-# Main window for game.
-# 2021
+#!/usr/bin/env python3
+# @file     main_window.py
+# @brief    Main window for game.
+# Daryl Dang - 2021
 
 ###########
 # IMPORTS #
@@ -23,7 +24,10 @@ FPS = 60
 # Class Definitions #
 #####################
 class MainWindow:
-    def __init__(self):
+    """
+    Main window class for game.
+    """
+    def __init__(self) -> None:
         """
         Constructor
         """
@@ -33,7 +37,7 @@ class MainWindow:
         # Set window title
         pygame.display.set_caption("Enso")
 
-    def run(self):
+    def run(self) -> None:
         """
         Runs the main window.
         """

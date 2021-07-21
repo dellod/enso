@@ -1,17 +1,19 @@
-# run.py
-# Main entry point for program
-# 2021
+#!/usr/bin/env python3
+# @file     run.py
+# @brief    Main entry point for program
+# Daryl Dang - 2021
 
 ###########
 # IMPORTS #
 ###########
 import pygame
+
 from main_window.main_window import MainWindow
+from logger.logger import Logger
 
 #############
 # CONSTANTS #
 #############
-
 
 ###########
 # GLOBALS #
