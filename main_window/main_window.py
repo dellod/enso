@@ -13,6 +13,7 @@ import pygame
 WIDTH, HEIGHT = 900, 500
 SCREEN_SIZE = (WIDTH, HEIGHT)
 CAPTION = "Enso"
+FPS = 60
 
 ###########
 # GLOBALS #
@@ -37,8 +38,10 @@ class MainWindow:
         Runs the main window.
         """
         _is_window_running = True
+        clock = pygame.time.Clock()
 
         while _is_window_running:
+            clock.tick(FPS) # Keep clock refresh rate at consisten frame rate
             for event in pygame.event.get():
                 # User clicks the exit button at the top right of the window, break from this loop
                 if event.type == pygame.QUIT:
