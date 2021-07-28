@@ -7,12 +7,12 @@
 # IMPORTS #
 ###########
 import logging
-
 from enum import IntEnum, auto
 
 #############
 # CONSTANTS #
 #############
+LOGGING_FILE_NAME = "log.log"
 
 ###########
 # GLOBALS #
@@ -25,9 +25,9 @@ class VerbosityLevel(IntEnum):
     """
     Enum for verbosity levels.
     """
-    VERBOSITY_LEVEL0 = 0
-    VERBOSITY_LEVEL1 = auto()
-    VERBOSITY_LEVEL2 = auto()
+    VERBOSITY_LEVEL0 = 0        # No logs or prints
+    VERBOSITY_LEVEL1 = auto()   # Critical/errors/warnings levels and prints to console
+    VERBOSITY_LEVEL2 = auto()   # Info/debug level and prints to console
 
 class Logger:
     """
@@ -40,9 +40,12 @@ class Logger:
         Represents the current running instance of Logger, this will only be created once (by default set to None).
     _verbosity_level: int
         Represents the verbosity level (by default set to VERBOSITY_LEVEL0).
+    _print_statements_enabled : bool
+        Represents if print statements are going to be enabled (by default set to False).
     """
     _logger_instance = None
     _verbosity_level = int(VerbosityLevel.VERBOSITY_LEVEL0)
+    _print_statements_enabled = False
 
     @staticmethod
     def get_instance():
@@ -62,6 +65,18 @@ class Logger:
         else:
             Logger._logger_instance = self
 
+    def set_print_statements(self, print_flag: bool) -> None:
+        """
+        Sets if print statements will enabled/disabled.
+
+        Args:
+            print_flag (bool): Boolean flag to enable/disable print statements.
+        """
+        if print_flag:
+            self._print_statements_enabled = print_flag
+        else:
+            self._print_statements_enabled = print_flag
+
     def set_verbosity_level(self, verbosity_level: int) -> bool:
         """
         Sets the verbosity level of logger.
@@ -74,30 +89,113 @@ class Logger:
         """
         _enum_values = [item.value for item in VerbosityLevel]
         if verbosity_level in _enum_values:
+            # Set verbosity level
             self._verbosity_level = verbosity_level
+
+            # Switcher
+            _switch = {
+                0: self._set_verbosity_level0,
+                1: self._set_verbosity_level1,
+                2: self._set_verbosity_level2
+                }
+
+            # Set logging level based on verbosity set
+            _switch.get(verbosity_level, None)()
+
             return True
         else:
             return False
 
-    def print_console(self, message: str="", src_file: str="") -> None:
+    def _set_verbosity_level0(self):
         """
-        Prints to console if verbosity level 1 or more set.
+        Set verbosity level 0.
+        """
+        pass
+
+    def _set_verbosity_level1(self):
+        """
+        Set verbosity level 1.
+        """
+        logging.basicConfig( filename=LOGGING_FILE_NAME, \
+                             filemode='w', \
+                             format='%(asctime)s - %(levelname)s \t- %(message)s', \
+                             level=logging.WARNING )
+
+    def _set_verbosity_level2(self):
+        """
+        Set verbosity level 2.
+        """
+        logging.basicConfig( filename=LOGGING_FILE_NAME, \
+                             filemode='w', \
+                             format='%(asctime)s - %(levelname)s \t- %(message)s', \
+                             level=logging.DEBUG )
+
+    def print_critical(self, message: str="", src_file: str="") -> None:
+        """
+        Prints and logs critical to console if verbosity level 1 or more set.
 
         Args:
             message (str, optional)     : Message to print to console. Defaults to "".
             src_file (str, optional)    : [description]. Defaults to "".
         """
         if self._verbosity_level >= int(VerbosityLevel.VERBOSITY_LEVEL1):
-            print(message)
+            _mes = src_file + ": " + message
+            if self._print_statements_enabled:
+                print("CRITICAL \t- ", src_file + ": \t" + message)
+            logging.critical(_mes)
 
-if __name__ == "__main__":
-    pass
-    # logger = Logger.get_instance()
+    def print_error(self, message: str="", src_file: str="") -> None:
+        """
+        Prints and logs error to console if verbosity level 1 or more set.
 
-    # #Testing verbosity level 0
-    # logger.set_verbosity_level(0)
-    # logger.print_console("testing logger verbosity level 0")
+        Args:
+            message (str, optional)     : Message to print to console. Defaults to "".
+            src_file (str, optional)    : [description]. Defaults to "".
+        """
+        if self._verbosity_level >= int(VerbosityLevel.VERBOSITY_LEVEL1):
+            _mes = src_file + ": " + message
+            if self._print_statements_enabled:
+                print("ERROR \t\t- ", src_file + ": \t" + message)
+            logging.error(_mes)
 
-    # #Testing verbosity level 1
-    # logger.set_verbosity_level(1)
-    # logger.print_console("testing logger verbosity level 1")
+    def print_warning(self, message: str="", src_file: str="") -> None:
+        """
+        Prints and logs warning to console if verbosity level 1 or more set.
+
+        Args:
+            message (str, optional)     : Message to print to console. Defaults to "".
+            src_file (str, optional)    : [description]. Defaults to "".
+        """
+        if self._verbosity_level >= int(VerbosityLevel.VERBOSITY_LEVEL1):
+            _mes = src_file + ": " + message
+            if self._print_statements_enabled:
+                print("WARNING \t- ", src_file + ": \t" + message)
+            logging.warning(_mes)
+
+    def print_info(self, message: str="", src_file: str="") -> None:
+        """
+        Prints and logs info to console if verbosity level 2 or more set.
+
+        Args:
+            message (str, optional)     : Message to print to console. Defaults to "".
+            src_file (str, optional)    : [description]. Defaults to "".
+        """
+        if self._verbosity_level >= int(VerbosityLevel.VERBOSITY_LEVEL2):
+            _mes = src_file + ": " + message
+            if self._print_statements_enabled:
+                print("INFO \t\t- ", src_file + ": \t" + message)
+            logging.info(_mes)
+
+    def print_debug(self, message: str="", src_file: str="") -> None:
+        """
+        Prints and logs debug to console if verbosity level 2 or more set.
+
+        Args:
+            message (str, optional)     : Message to print to console. Defaults to "".
+            src_file (str, optional)    : [description]. Defaults to "".
+        """
+        if self._verbosity_level >= int(VerbosityLevel.VERBOSITY_LEVEL2):
+            _mes = src_file + ": " + message
+            if self._print_statements_enabled:
+                print("DEBUG \t\t- ", src_file + ": \t" + message)
+            logging.debug(_mes)
